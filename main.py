@@ -5,6 +5,7 @@ each dataset.
 import file_io
 import pressure_processor
 import handle_inputs
+import os
 
 def main():
 
@@ -15,6 +16,11 @@ def main():
 
     if dir == "N" or dir == "n" or dir == "":
         dir = './Data/'
+
+    try:
+        os.mkdir('./Exported')
+    except FileExistsError:
+        pass
 
     number_of_files = input("How many files would you like to plot? (Up to 5) ")
 

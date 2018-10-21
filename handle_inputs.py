@@ -1,6 +1,7 @@
 import file_io
 import pressure_processor
 from datetime import datetime
+import os
 
 def handle_single(dir):
 
@@ -27,14 +28,23 @@ def handle_single(dir):
     except TypeError:
         return
 
-    graph = pressure_processor.plot_single_pressure(pressure, time, units)
-
     format = input("Export filetype ('pdf' or 'png'; other input for view "
                     "only) ")
 
-    export_filename = './Exported/'+ filename + ' ' + str(datetime.now().strftime("%Y-%m-%d %H-%M-%S")) + '.' + format
+    save_dir = str("./Exported/" + datetime.now().strftime("%Y-%m-%d "
+                                                               "%H-%M-%S"))
+    os.mkdir(save_dir)
 
-    pressure_processor.render_figure(graph, [filename],export_filename,format)
+    export_filename = save_dir + '/' + filename + ' ' + '.' + format
+
+    print (pressure[0],time[0])
+
+    graph = pressure_processor.plot_single_pressure(pressure[0], time[0],
+                                                    units)
+
+    pressure_processor.render_figure(graph,[filename],export_filename,format)
+    pressure_processor.prepare_output_data(filename,save_dir,pressure[0],
+                                           time[0])
 
     return
 
@@ -43,7 +53,7 @@ def handle_multi(dir, number_of_files):
 
     filename_list = input("Filenames? (Please separate using commas) ")
 
-    filename_list = filename_list.replace(" ", "")
+    # filename_list = filename_list.replace(" ", "")
     filename = filename_list.split(",")
 
     if len(filename) != number_of_files:
@@ -61,7 +71,8 @@ def handle_multi(dir, number_of_files):
 
     return
 
-def handle_interval_selection(pressure,time,start,end):
+def handle_interval_selection(pressure,time,start,end,new_pressure=[],
+                              new_time=[]):
 
     interval_input = input("Close the graph and enter the interval of "
                            "interest in seconds by specifying the start and "
@@ -78,8 +89,6 @@ def handle_interval_selection(pressure,time,start,end):
             print("Error: Please input two numbers.")
             return
 
-        print(start,interval[0],end,interval[1])
-
         if 0 >= float(interval[0]) or float(end) <= float(
                 interval[1]):
             print("Error: Out of range")
@@ -94,4 +103,7 @@ def handle_interval_selection(pressure,time,start,end):
         pressure, time = pressure_processor.select_interval(pressure, time,
                                                             start, end)
 
-    return pressure,time
+        new_pressure.append(pressure)
+        new_time.append(time)
+
+    return new_pressure,new_time

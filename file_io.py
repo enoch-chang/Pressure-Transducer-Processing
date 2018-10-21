@@ -2,7 +2,6 @@ import glob
 import csv
 import json
 
-
 def collect_csv_filenames(dir):
     """Collect all the *.csv files located in the test_data folder
 
@@ -23,7 +22,6 @@ def read_csv(filename):
     csvfile = open(filename + '.csv', "r")
     time = []
     pressure = []
-
 
     temp = csv.reader(csvfile, delimiter=",")
 
@@ -52,6 +50,25 @@ def read_csv(filename):
 
     return time, pressure, units, start, end, min, max
 
+def write_csv(filename, save_dir, duration, min, max, pressure, time):
+
+
+    csvfile = open(save_dir + "/" + filename + '.csv', "w")
+
+    temp = csv.writer(csvfile, delimiter=',')
+
+    temp.writerow(["Filename"]+ [filename])
+    temp.writerow(["Max Pressure"] + [max])
+    temp.writerow(["Min Pressure"] + [min])
+    temp.writerow(["Duration"] + [duration])
+
+    temp.writerow([" "])
+    temp.writerow(["Time"] + ["Pressure"])
+
+    for count,i in enumerate(pressure):
+        temp.writerow([time[count-1]] + [i])
+
+    return
 
 def write_json(filename, info):
     """Write data to .json file
