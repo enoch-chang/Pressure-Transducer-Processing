@@ -1,23 +1,20 @@
-import glob
+"""
+Author: Enoch Chang
+
+This script handles reading (input data) and writing (processed data) csv data
+files.
+"""
+
 import csv
-import json
-
-def collect_csv_filenames(dir):
-    """Collect all the *.csv files located in the test_data folder
-
-    :return: list containing list of all filenames
-    """
-    filenames_list = glob.glob(dir)
-    if len(filenames_list) == 0:
-        print("No files found in specified directory.")
-    return filenames_list
-
+import matplotlib.pyplot as plt
 
 def read_csv(filename):
-    """Read csv file and separate time and voltage into respective lists
+    """Read csv file and separate time and pressure into respective lists.
+    Also collects other parameters such as units, the start and end times and
+    the min and max data values
 
     :param filename:
-    :return:
+    :return: time, pressure lists, units, start, end, min and max
     """
     csvfile = open(filename + '.csv', "r")
     time = []
@@ -46,12 +43,21 @@ def read_csv(filename):
             time.append(row[0])
             pressure.append(float(row[1]))
 
-    # pressure = list(map(float, pressure))
-
     return time, pressure, units, start, end, min, max
 
 def write_csv(filename, save_dir, duration, min, max, pressure, time):
+    """ Writes CSV containing information about the test performed,
+    including the data set within the specified time range
 
+    :param filename: Name of the corresponding input data file
+    :param save_dir: Directory of where the file is saved
+    :param duration: Duration of the test
+    :param min: Min pressure value during test
+    :param max: Max pressure value during test
+    :param pressure: Pressure data list
+    :param time: Time list
+    :return:
+    """
 
     csvfile = open(save_dir + "/" + filename + '.csv', "w")
 
@@ -70,16 +76,25 @@ def write_csv(filename, save_dir, duration, min, max, pressure, time):
 
     return
 
-def write_json(filename, info):
-    """Write data to .json file
+def render_figure(graph, input_file, filename, format='none', show=True):
+    """ Displays and/or saves graphs containing plotted data
 
-    :param filename: Output filename
-    :param info: Dictionary containing data to write
+    :param graph: Graph object
+    :param input_file: Filename of the raw data file
+    :param filename: File name of the exported graph
+    :param format: Format that the graph will be saved in
+    :param show: Boolean on whether to display the graph when script is run
     :return:
     """
-    json_filename = filename.replace('.csv', '.json')
-    json_file = open(json_filename, "w")
-    json.dump(info, json_file)
-    json_file.close
+
+    graph.legend(input_file)
+
+    if format == 'pdf' or format == 'png':
+        graph.savefig( filename,
+                    format=format)
+        if show is True:
+            graph.show()
+    else:
+        graph.show()
 
     return

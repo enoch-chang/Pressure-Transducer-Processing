@@ -1,20 +1,24 @@
-""" Extracts filenames from specified directory and performs ECG analysis on
-each dataset.
+"""
+Author: Enoch Chang
+
+This program takes exported csv files from OMEGA PX409 USBH pressure
+transducers and plots data onto a graph. It allows for plotting multiple
+data sets and selection of data range for plotting.
+
+This script contains the main function which initiates data processor by
+collecting filenames then performing relevant data handling
 """
 
-import file_io
-import pressure_processor
 import handle_inputs
 import os
 
 def main():
-
-    # filenames_list = file_io.collect_csv_filenames(dir)
-
+    """Main function is executed from console to collect filenames from user input"""
     dir = input("Enter the directory for your data (Input 'N' to use the "
                 "./Data/ folder): ")
 
     if dir == "N" or dir == "n" or dir == "":
+        ### CHANGE DEFAULT DIRECTORY HERE FOR DATA SOURCE ###
         dir = './Data/'
 
     try:
@@ -35,21 +39,6 @@ def main():
         handle_inputs.handle_single(dir)
     elif int(number_of_files) < 6:
         handle_inputs.handle_multi(dir, int(number_of_files))
-
-
-    #print(time, pressure, units)
-
-    # time_unit = input("Time is in min or sec (default = sec)? ")
-    # if time_unit != "sec" and time_unit != "min":
-    #     print("Warning: Input was neither 'sec' or 'min'. Data saved as "
-    #           "seconds.")
-    #
-    # for filename in filenames_list:
-    #     time, voltage = file_io.read_csv(filename)
-    #     hrm = process_ecg_data.HeartRateMonitor(time, voltage, voltage_ref,
-    #                                             time_unit, filename)
-    #
-    #     file_io.write_json(filename, hrm.output())
 
 if __name__ == "__main__":
     main()
