@@ -5,3 +5,5 @@ pytest-cov
 sphinx
 matplotlib
 datetime
+os
+csv
